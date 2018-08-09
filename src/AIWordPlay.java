@@ -1,5 +1,7 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.*;
 
 public class AIWordPlay {
     private String alphabets="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -10,19 +12,62 @@ public class AIWordPlay {
 
     AIWordPlay(int difficulty){
         this.wordCount=difficulty;
+        this.guessList=getGuessList();
+        this.secretWord=selectSecretWord();
     }
 
     public int getPrimeProduct(String word){
-        return 0;
+        int primeProduct=1;
+
+        for(int i = 0; i < word.length(); i++){
+            word=word.toUpperCase();
+            primeProduct*=primeScore[alphabets.indexOf(word.charAt(i))];
+            System.out.println(primeProduct);
+        }
+
+        return primeProduct;
+    }
+
+    boolean uniqueCharacters(String str) {
+        for(int i = 0; i < str.length(); i++) {
+            for(int j = i + 1; j < str.length(); j++) {
+                if(str.charAt(i)== str.charAt(j) ){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Map<String,Integer> getGuessList(){
-        //code for retrieving from sowpods and updating
-        return new HashMap<>();
+        try{
+            File file = new File("/sowpods.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String st;
+            while ((st = br.readLine()) != null)
+            {
+                System.out.println(st);
+                if(st.length()==wordCount && uniqueCharacters(st))
+                    guessList.put(st,getPrimeProduct(st));
+            }
+        }
+        catch(Exception exception)
+        {
+            System.out.println("Exception");
+        }
+        return guessList;
     }
 
-    public void selectSecretList(){
-        //random word to be selected after the first guesslist is generated and stored in the string secret word i.e., this.secretword
+    public String selectSecretWord(){
+        Object[] words = guessList.keySet().toArray();
+        Object key = words[new Random().nextInt(words.length)];
+        return key.toString();
+    }
+
+    public String selectRandomWord(){
+        Object[] words = guessList.keySet().toArray();
+        Object key = words[new Random().nextInt(words.length)];
+        return key.toString();
     }
 
     public void updateGuessList(String word,int score){
@@ -30,10 +75,21 @@ public class AIWordPlay {
     }
 
     public int getScore(String word){
-        //to return the common letters
-        return 0;
+        Set<Character> characters1 = new TreeSet<Character>();
+        for(int i = 0; i < this.secretWord.length(); i++) {
+            characters1.add(this.secretWord.charAt(i));
+        }
+        Set<Character> characters2 = new TreeSet<Character>();
+        for(int i = 0; i < word.length(); i++) {
+            characters2.add(word.charAt(i));
+        }
+        characters1.retainAll(characters2);
+        return characters1.size();
     }
 
+    public boolean isCorrectGuess(String word){
+        return this.secretWord.equalsIgnoreCase(word);
+    }
 
 
 }
