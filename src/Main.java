@@ -9,10 +9,9 @@ public class Main {
         String score = new String();
         Scanner in = new Scanner(System.in);
         System.out.println("Please select your Secret Word...");
-        /*input = in.nextLine();
-        UserWordPlay user = new UserWordPlay(input);*/
         System.out.println("Computer : Enter you guess...");
         input= in.nextLine();
+        System.out.println("size = "+computer.guessList.size());
         while(!computer.isCorrectGuess(input)){
             System.out.println(computer.getScore(input));
             guessWord = computer.selectRandomWord();

@@ -44,7 +44,6 @@ public class AIWordPlay {
             String st;
             while ((st = br.readLine()) != null)
             {
-                //System.out.println(st);
                 if(st.length()==wordCount && uniqueCharacters(st))
                     guessList.put(st,getPrimeProduct(st));
             }
@@ -53,7 +52,6 @@ public class AIWordPlay {
         {
             System.out.println("Exception");
         }
-        //return guessList;
     }
 
     public String selectSecretWord(){
@@ -92,12 +90,12 @@ public class AIWordPlay {
     public void updateGuessList(String word,int score){
         Map<String,Integer> updatedList= new HashMap<>();
         int common;
+        this.guessList.remove(word);
         List<Integer> primeList = new ArrayList<>();
         List<String> removalList = new ArrayList<>();
         for(int i=0;i<word.length();i++){
             primeList.add(primeScore[alphabets.indexOf(word.charAt(i))]);
         }
-
         if(score==0) {
             for (Map.Entry<String, Integer> entry : guessList.entrySet()) {
                 for (int i = 0; i < primeList.size(); i++) {
@@ -116,7 +114,7 @@ public class AIWordPlay {
         else {
             for (Map.Entry<String, Integer> entry : guessList.entrySet()) {
                 common = findCommonOccurance(entry.getValue(), primeList);
-                if (common < score || getPrimeProduct(word) == getPrimeProduct(entry.getKey())) {
+                if (common != score || getPrimeProduct(word) == getPrimeProduct(entry.getKey())) {
                     removalList.add(entry.getKey());
                 }
             }
